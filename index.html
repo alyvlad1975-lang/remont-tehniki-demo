@@ -90,6 +90,27 @@
     .bar__mark { font-size: var(--v-t-base); }
   }
   @media (max-width: 860px) { .bar.is-scrolled { background: color-mix(in oklab, var(--v-canvas) 96%, transparent); } }
+  /* меню разделов: ссылки в шапке на широком экране, «Меню» с выпадающей панелью на узком */
+  .bar__links { display: flex; align-items: center; gap: var(--v-1); }
+  .bar__links a, .bar__panel a { color: inherit; text-decoration: none; font-size: var(--v-t-sm); font-weight: 500; display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--v-2); border-radius: 6px; }
+  .bar__links a { opacity: .9; }
+  .bar__links a:hover, .bar__links a:focus-visible { opacity: 1; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .bar__burger { position: relative; display: none; }
+  .bar__burger summary { list-style: none; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; padding: 0 var(--v-2); font-weight: 600; font-size: var(--v-t-sm); }
+  .bar__burger summary::-webkit-details-marker { display: none; }
+  .bar__burger summary::after { content: ""; width: .5em; height: .5em; margin-left: .5em; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-.15em) rotate(45deg); transition: transform .2s var(--v-ease-out); }
+  .bar__burger[open] summary::after { transform: translateY(.15em) rotate(-135deg); }
+  .bar__panel { position: absolute; right: 0; top: calc(100% + .5rem); min-width: 15rem; display: grid; padding: var(--v-2); border-radius: var(--v-radius); background: var(--v-surface); color: var(--v-ink); box-shadow: var(--v-e2); }
+  .bar__panel a { color: var(--v-ink); justify-content: flex-start; }
+  .bar__panel a:hover, .bar__panel a:focus-visible { background: var(--v-accent-10); }
+  @media (max-width: 1180px) {
+    .bar__links { display: none; }
+    .bar__burger { display: block; }
+  }
+  @media (max-width: 480px) {
+    .bar > .bar__right > .v-btn { display: none; }
+    .bar__panel .bar__cta { margin-top: var(--v-1); background: var(--v-accent); color: var(--v-accent-ink); justify-content: center; }
+  }
 
   /* ---- акт 1 · hero: игла в шве, бирка квитанции вторым планом ------------- */
   #top { --v-accent: var(--hero-accent); --v-accent-ink: var(--hero-accent-ink); }
@@ -389,6 +410,24 @@
 
   <header class="bar">
     <a class="bar__mark" href="#top"><i aria-hidden="true"></i>{{компания}}</a>
+    <nav class="bar__links" aria-label="Разделы сайта">
+      <a href="#ceny">Цены</a>
+      <a href="#kvitanciya">Как проходит</a>
+      <a href="#berem">Что берём</a>
+      <a href="#master">Мастер</a>
+      <a href="#kontakty">Контакты</a>
+    </nav>
+    <details class="bar__burger">
+      <summary>Меню</summary>
+      <nav class="bar__panel" aria-label="Разделы сайта">
+        <a href="#ceny">Цены</a>
+        <a href="#kvitanciya">Как проходит</a>
+        <a href="#berem">Что берём</a>
+        <a href="#master">Мастер</a>
+        <a href="#kontakty">Контакты</a>
+        <a class="bar__cta" href="#zayavka">Оставить заявку</a>
+      </nav>
+    </details>
     <nav class="bar__right" aria-label="Быстрые ссылки">
       <a class="bar__tel" href="tel:{{телефон}}">{{телефон}}</a>
       <a class="v-btn" href="#zayavka">Оставить заявку</a>
@@ -698,6 +737,11 @@
     document.getElementById('kvitanciya').setAttribute('data-v-span', '2.4');
   }
   Vibe.mount(document.querySelector('.v-page'));
+
+  // Выпадающее «Меню» закрываем после выбора раздела.
+  document.querySelectorAll('.bar__panel a').forEach(function (a) {
+    a.addEventListener('click', function () { document.querySelector('.bar__burger').removeAttribute('open'); });
+  });
 
   // Шапка: подложка после 40 px прокрутки; на титуле светлая, дальше в цвет страницы.
   (function () {
